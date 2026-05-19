@@ -121,7 +121,16 @@ class MaxstreamExtractor(BaseExtractor):
                     "cookies": cookies,
                 }
             except Exception as e:
-                return {"ok": False, "status": 0, "text": "", "content": b"", "url": url, "headers": {}, "cookies": {}, "error": str(e)}
+                return {
+                    "ok": False,
+                    "status": 0,
+                    "text": "",
+                    "content": b"",
+                    "url": url,
+                    "headers": {},
+                    "cookies": {},
+                    "error": str(e),
+                }
 
         result = await loop.run_in_executor(None, _do_request)
         if result.get("cookies"):
@@ -272,6 +281,7 @@ class MaxstreamExtractor(BaseExtractor):
         try:
             from PIL import Image, ImageFilter
             import io
+
             img = Image.open(io.BytesIO(img_bytes)).convert("L")
             img = img.point(lambda p: 255 if p >= 140 else 0, mode="L")
             img = img.filter(ImageFilter.MaxFilter(3))
@@ -288,13 +298,12 @@ class MaxstreamExtractor(BaseExtractor):
             import pytesseract
             from PIL import Image, ImageFilter
             import io
+
             img = Image.open(io.BytesIO(img_bytes)).convert("L")
             img = img.point(lambda p: 255 if p >= 140 else 0, mode="L")
             img = img.filter(ImageFilter.MaxFilter(3))
             img = img.filter(ImageFilter.MinFilter(3))
-            return pytesseract.image_to_string(
-                img, config="--psm 7 -c tessedit_char_whitelist=0123456789"
-            ).strip()
+            return pytesseract.image_to_string(img, config="--psm 7 -c tessedit_char_whitelist=0123456789").strip()
         except Exception:
             return ""
 
@@ -318,6 +327,7 @@ class MaxstreamExtractor(BaseExtractor):
         auth = (os.getenv("CF_WORKER_OCR_AUTH") or "").strip()
         try:
             import aiohttp
+
             headers = {"content-type": "image/png"}
             if auth:
                 headers["x-worker-auth"] = auth
@@ -337,9 +347,7 @@ class MaxstreamExtractor(BaseExtractor):
 
     # ─────────────────── Captcha solver loop ───────────────────────────
 
-    async def _solve_uprot_captcha_once(
-        self, text: str, original_url: str, preprocess: bool = False
-    ) -> Optional[str]:
+    async def _solve_uprot_captcha_once(self, text: str, original_url: str, preprocess: bool = False) -> Optional[str]:
         try:
             import ddddocr
         except ImportError:
@@ -370,6 +378,7 @@ class MaxstreamExtractor(BaseExtractor):
         if img_url.startswith("data:"):
             try:
                 import base64
+
                 _, b64 = img_url.split(",", 1)
                 img_data = base64.b64decode(b64)
             except Exception:
@@ -425,18 +434,14 @@ class MaxstreamExtractor(BaseExtractor):
                     post_data[n] = v
 
         headers = {**self.base_headers, "referer": original_url}
-        result = await self._curl_cffi_fetch(
-            form_action, method="POST", data=urlencode(post_data), headers=headers
-        )
+        result = await self._curl_cffi_fetch(form_action, method="POST", data=urlencode(post_data), headers=headers)
         if not result:
             return None
         solved_text = result.get("text") or ""
         self._last_solve_text = solved_text if isinstance(solved_text, str) else None
         return self._parse_uprot_html(solved_text)
 
-    async def _solve_uprot_captcha(
-        self, text: str, original_url: str, max_attempts: int = 4
-    ) -> Optional[str]:
+    async def _solve_uprot_captcha(self, text: str, original_url: str, max_attempts: int = 4) -> Optional[str]:
         """Solve the captcha with retries on fresh images.
 
         Each wrong submit triggers uprot to serve a brand-new captcha
@@ -445,7 +450,7 @@ class MaxstreamExtractor(BaseExtractor):
         """
         current = text
         for attempt in range(1, max_attempts + 1):
-            preprocess = (attempt % 2 == 0)
+            preprocess = attempt % 2 == 0
             result = await self._solve_uprot_captcha_once(current, original_url, preprocess=preprocess)
             if result:
                 return result
@@ -566,6 +571,7 @@ class MaxstreamExtractor(BaseExtractor):
         cached = None
         try:
             from mediaflow_proxy.services import uprot_url_cache  # type: ignore
+
             cached = uprot_url_cache.get(url, season=season, episode=episode)
         except Exception:
             pass
@@ -585,14 +591,13 @@ class MaxstreamExtractor(BaseExtractor):
         if cffi and cffi.get("ok"):
             text = cffi["text"]
         else:
-            response = await self._make_request(
-                maxstream_url, headers={"accept-language": "en-US,en;q=0.5"}
-            )
+            response = await self._make_request(maxstream_url, headers={"accept-language": "en-US,en;q=0.5"})
             text = response.text
 
         if not cached:
             try:
                 from mediaflow_proxy.services import uprot_url_cache  # type: ignore
+
                 uprot_url_cache.put(url, maxstream_url, season=season, episode=episode)
             except Exception:
                 pass

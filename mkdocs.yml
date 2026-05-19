@@ -48,6 +48,7 @@ nav:
       - Speed test: configuration/speedtest.md
   - Usage:
       - Overview & endpoints: usage/overview.md
+      - Forward proxy: usage/forward.md
       - Video extractor: usage/extractor.md
       - Xtream Codes proxy: usage/xtream.md
       - URL parameters & generation: usage/url-params-and-encoding.md

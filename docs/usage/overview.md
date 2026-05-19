@@ -9,15 +9,16 @@
 4. `/proxy/mpd/playlist.m3u8`: Generate HLS playlists from MPD
 5. `/proxy/mpd/segment.mp4`: Process and decrypt media segments
 6. `/proxy/ip`: Get the public IP address of the MediaFlow Proxy server
-7. `/extractor/video`: Extract direct video stream URLs from supported hosts (see [Video extractor](extractor.md))
-8. `/playlist/builder`: Build and customize playlists from multiple sources
-9. `/proxy/epg`: Proxy and cache XMLTV/EPG data (see [EPG Proxy](#epg-proxy) below)
-10. `/proxy/transcode/playlist.m3u8`: Generate HLS VOD playlist for generic stream transcode
-11. `/proxy/transcode/init.mp4`: fMP4 init segment for generic transcode playlist
-12. `/proxy/transcode/segment.m4s`: fMP4 media segment for generic transcode playlist
-13. `/proxy/telegram/transcode/playlist.m3u8`: Generate HLS VOD playlist for Telegram transcode
-14. `/proxy/telegram/transcode/init.mp4`: fMP4 init segment for Telegram transcode playlist
-15. `/proxy/telegram/transcode/segment.m4s`: fMP4 media segment for Telegram transcode playlist
+7. `/proxy/forward`: Generic transparent HTTP relay — any method, any body, any headers; route API calls through MediaFlow's IP (see [Forward proxy](forward.md))
+8. `/extractor/video`: Extract direct video stream URLs from supported hosts (see [Video extractor](extractor.md))
+9. `/playlist/builder`: Build and customize playlists from multiple sources
+10. `/proxy/epg`: Proxy and cache XMLTV/EPG data (see [EPG Proxy](#epg-proxy) below)
+11. `/proxy/transcode/playlist.m3u8`: Generate HLS VOD playlist for generic stream transcode
+12. `/proxy/transcode/init.mp4`: fMP4 init segment for generic transcode playlist
+13. `/proxy/transcode/segment.m4s`: fMP4 media segment for generic transcode playlist
+14. `/proxy/telegram/transcode/playlist.m3u8`: Generate HLS VOD playlist for Telegram transcode
+15. `/proxy/telegram/transcode/init.mp4`: fMP4 init segment for Telegram transcode playlist
+16. `/proxy/telegram/transcode/segment.m4s`: fMP4 media segment for Telegram transcode playlist
 
 ## EPG Proxy
 

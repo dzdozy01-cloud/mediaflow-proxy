@@ -27,3 +27,11 @@ Set the following environment variables:
 - `DASH_SEGMENT_CACHE_TTL`: Optional. TTL in seconds for cached DASH segments. Default: `60`. Longer values help with slow network playback.
 - `FORWARDED_ALLOW_IPS`: Optional. Controls which IP addresses are trusted to provide forwarded headers (X-Forwarded-For, X-Forwarded-Proto, etc.) when MediaFlow Proxy is deployed behind reverse proxies or load balancers. Default: `127.0.0.1`. See [Forwarded Headers Configuration](networking.md#forwarded-headers-configuration) for detailed usage.
 
+### `/proxy/forward` settings
+
+- `PUBLIC_IP`: Optional. Static public IP returned by `/proxy/ip` and substituted for `{mediaflow_ip}` in forwarded requests. Auto-detected from `api.ipify.org` / `checkip.amazonaws.com` on first use when not set.
+- `FORWARD_ALLOWED_HOSTS`: Optional. Comma-separated allowlist of hostnames for `/proxy/forward`. Empty = allow any host (default).
+- `FORWARD_DENIED_HOSTS`: Optional. Comma-separated denylist of additional hostnames. Private/loopback IPs are always blocked regardless of this setting.
+- `FORWARD_MAX_REQUEST_BODY_BYTES`: Optional. Maximum incoming request body size in bytes. Default: `52428800` (50 MB).
+- `FORWARD_MAX_RESPONSE_BODY_BYTES`: Optional. Maximum upstream response body size in bytes. Default: `10485760` (10 MB).
+
